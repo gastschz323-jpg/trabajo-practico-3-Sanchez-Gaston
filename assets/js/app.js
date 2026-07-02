@@ -6,7 +6,6 @@ const contenedor = document.getElementById('contenedor-personajes');
 const buscadorForm = document.getElementById('buscador-form');
 const inputBusqueda = document.getElementById('input-busqueda');
 
-// 1. Fetch de la API real
 async function obtenerPersonajes() {
     try {
         const respuesta = await fetch(API_URL);
@@ -14,7 +13,6 @@ async function obtenerPersonajes() {
 
         const datos = await respuesta.json();
 
-        // CORRECCIÓN: el endpoint devuelve { results: [...] }, no "characters".
         listaPersonajes = Array.isArray(datos) ? datos : (datos.results || []);
 
         console.log("¡Datos de la API cargados!", listaPersonajes);
@@ -25,7 +23,6 @@ async function obtenerPersonajes() {
     }
 }
 
-// 2. Renderizar tarjetas en el DOM
 function renderizarTarjetas(personajes) {
     limpiarResultados();
 
@@ -34,7 +31,6 @@ function renderizarTarjetas(personajes) {
         return;
     }
 personajes.forEach(personaje => {
-    // Buscamos el campo de imagen, sea cual sea su nombre real en la API
     const campoImagen = personaje.image || personaje.portrait_path;
 
     if (!personaje || !personaje.name) {
@@ -70,12 +66,10 @@ personajes.forEach(personaje => {
 });
 }
 
-// 3. Limpiar resultados
 function limpiarResultados() {
     contenedor.innerHTML = '';
 }
 
-// 4. Filtrar personajes localmente
 function filtrarPersonajes(evento) {
     evento.preventDefault();
     const textoBusqueda = inputBusqueda.value.trim().toLowerCase();
@@ -85,7 +79,6 @@ function filtrarPersonajes(evento) {
         return;
     }
 
-    // CORRECCIÓN: validamos que personaje.name exista antes de usar toLowerCase()
     const filtrados = listaPersonajes.filter(personaje =>
         personaje.name && personaje.name.toLowerCase().includes(textoBusqueda)
     );
@@ -93,6 +86,5 @@ function filtrarPersonajes(evento) {
     renderizarTarjetas(filtrados);
 }
 
-// Event Listeners
 buscadorForm.addEventListener('submit', filtrarPersonajes);
 document.addEventListener('DOMContentLoaded', obtenerPersonajes);
