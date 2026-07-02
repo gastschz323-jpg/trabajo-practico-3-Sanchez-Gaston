@@ -25,6 +25,11 @@ body{
     border-radius: 70px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+.card:hover{
+    transform: translateY(-10px) scale(1.02);
+    border-color: goldenrod !important; 
+}
+        
 .btn-pj{
     background-color:black;
     color: aliceblue;
@@ -32,4 +37,14 @@ body{
 }
 .frase{
     color:chocolate ;
+}
+::-webkit-scrollbar {
+    width: 20px;
+}
+::-webkit-scrollbar-track {
+    background: #ffffff; 
+}
+::-webkit-scrollbar-thumb {
+    background: goldenrod; 
+    border-radius: 5px;
 }
