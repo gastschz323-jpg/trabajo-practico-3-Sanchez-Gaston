@@ -59,7 +59,7 @@ personajes.forEach(personaje => {
                         <span class="badge ${personaje.status === 'Alive' ? 'bg-success' : 'bg-danger'}">${personaje.status || 'Unknown'}</span>
                     </p>
                 </div>
-                <button class="btn btn-primary btn-ver-detalle mt-3" data-id="${personaje.id}">Ver detalle</button>
+                <button class="btn-pj btn btn-ver-detalle mt-3" data-id="${personaje.id}">Ver detalle</button>
             </div>
         </div>
     `;
@@ -128,7 +128,7 @@ function mostrarModal(personaje) {
                 <p><strong>Ocupación:</strong> ${personaje.occupation || 'No especificada'}</p>
                 <p><strong>Estado:</strong> ${personaje.status || 'Unknown'}</p>
                 <hr>
-                <p class="fst-italic text-center text-muted">${frase}</p>
+                <p class="frase fst-italic text-center">${frase}</p>
             </div>
         </div>
     `;

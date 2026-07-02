@@ -13,3 +13,23 @@ body{
     font-size:xx-large;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
+#input-busqueda{
+    border-radius:30px;
+}
+.buscar{
+    background-color: black;
+    border-radius: 30px;
+}
+.card{
+    background-color: #f8f9fa;
+    border-radius: 70px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.btn-pj{
+    background-color:black;
+    color: aliceblue;
+    border-radius: 60px;
+}
+.frase{
+    color:chocolate ;
+}
