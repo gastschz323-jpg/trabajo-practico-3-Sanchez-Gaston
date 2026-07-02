@@ -6,7 +6,7 @@ const contenedor = document.getElementById('contenedor-personajes');
 const buscadorForm = document.getElementById('buscador-form');
 const inputBusqueda = document.getElementById('input-busqueda');
 
-// 1. Fetch de la API real
+
 async function obtenerPersonajes() {
     try {
         const respuesta = await fetch(API_URL);
@@ -14,7 +14,6 @@ async function obtenerPersonajes() {
 
         const datos = await respuesta.json();
 
-        // CORRECCIÓN: el endpoint devuelve { results: [...] }, no "characters".
         listaPersonajes = Array.isArray(datos) ? datos : (datos.results || []);
 
         console.log("¡Datos de la API cargados!", listaPersonajes);
@@ -25,7 +24,6 @@ async function obtenerPersonajes() {
     }
 }
 
-// 2. Renderizar tarjetas en el DOM
 function renderizarTarjetas(personajes) {
     limpiarResultados();
 
@@ -34,7 +32,6 @@ function renderizarTarjetas(personajes) {
         return;
     }
 personajes.forEach(personaje => {
-    // Buscamos el campo de imagen, sea cual sea su nombre real en la API
     const campoImagen = personaje.image || personaje.portrait_path;
 
     if (!personaje || !personaje.name) {
@@ -70,12 +67,10 @@ personajes.forEach(personaje => {
 });
 }
 
-// 3. Limpiar resultados
 function limpiarResultados() {
     contenedor.innerHTML = '';
 }
 
-// 4. Filtrar personajes localmente
 function filtrarPersonajes(evento) {
     evento.preventDefault();
     const textoBusqueda = inputBusqueda.value.trim().toLowerCase();
@@ -84,15 +79,66 @@ function filtrarPersonajes(evento) {
         alert('Por favor, ingresa un nombre para buscar.');
         return;
     }
-
-    // CORRECCIÓN: validamos que personaje.name exista antes de usar toLowerCase()
     const filtrados = listaPersonajes.filter(personaje =>
         personaje.name && personaje.name.toLowerCase().includes(textoBusqueda)
     );
 
     renderizarTarjetas(filtrados);
 }
-
-// Event Listeners
 buscadorForm.addEventListener('submit', filtrarPersonajes);
 document.addEventListener('DOMContentLoaded', obtenerPersonajes);
+
+async function obtenerDetallePersonaje(id) {
+    try {
+        const respuesta = await fetch(`${API_URL}/${id}`);
+        if (!respuesta.ok) throw new Error('Error al obtener el detalle del personaje');
+        
+        const personaje = await respuesta.json();
+        mostrarModal(personaje);
+    } catch (error) {
+        console.error(error);
+        alert('No se pudieron cargar los detalles del personaje.');
+    }
+}
+
+function mostrarModal(personaje) {
+    const contenidoModal = document.getElementById('contenido-modal');
+    
+    const modalElement = document.getElementById('detalleModal');
+    const bootstrapModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+
+    const campoImagen = personaje.image || personaje.portrait_path;
+    const ruta = campoImagen ? (campoImagen.startsWith('/') ? campoImagen : `/${campoImagen}`) : null;
+    const imagenUrl = ruta ? `${CDN_URL}${ruta}` : 'https://via.placeholder.com/300x300?text=Sin+imagen';
+        const frase = personaje.phrases && personaje.phrases.length > 0 
+        ? `"${personaje.phrases[0]}"` 
+        : '"¡Ay caramba!"';
+
+    contenidoModal.innerHTML = `
+        <div class="modal-header bg-warning text-dark">
+            <h5 class="modal-title fw-bold">${personaje.name}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+            <img src="${imagenUrl}" alt="${personaje.name}" class="img-fluid mb-3" style="max-height: 250px; object-fit: contain;">
+            <div class="text-start">
+                <p><strong>Edad:</strong> ${personaje.age || 'No especificada'}</p>
+                <p><strong>Fecha de Nacimiento:</strong> ${personaje.birth || 'No especificada'}</p>
+                <p><strong>Género:</strong> ${personaje.gender || 'No especificado'}</p>
+                <p><strong>Ocupación:</strong> ${personaje.occupation || 'No especificada'}</p>
+                <p><strong>Estado:</strong> ${personaje.status || 'Unknown'}</p>
+                <hr>
+                <p class="fst-italic text-center text-muted">${frase}</p>
+            </div>
+        </div>
+    `;
+
+    bootstrapModal.show();
+}
+
+contenedor.addEventListener('click', (evento) => {
+    if (evento.target.classList.contains('btn-ver-detalle')) {
+        const idPersonaje = evento.target.getAttribute('data-id');
+        obtenerDetallePersonaje(idPersonaje);
+    }
+});
